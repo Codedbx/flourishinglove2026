@@ -1,0 +1,27 @@
+# ─── Working & source material (not part of the deployed site) ───
+# source/ = raw photos, videos, working SVG/Illustrator layers
+# docs/   = planning notes, briefs, reference images
+source/
+docs/
+
+# ─── OS cruft ───
+.DS_Store
+Thumbs.db
+desktop.ini
+*~
+
+# ─── Editor / IDE ───
+.vscode/
+.idea/
+*.sublime-project
+*.sublime-workspace
+
+# ─── Dependencies / build output (none today — defensive) ───
+node_modules/
+dist/
+build/
+
+# ─── Logs & temporary files ───
+*.log
+*.tmp
+__envtest_*.html
