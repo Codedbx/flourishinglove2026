@@ -111,8 +111,8 @@ body::before{
   text-align:center; overflow:clip;
   /* warm, dark surface — only seen on desktop, around the envelope */
   background:radial-gradient(125% 100% at 50% 24%,#3E2F1E 0%,#281D11 55%,#1A1208 100%);
-  /* the page only reveals after the envelope has fully opened (~2.1s in, done ~3.1s) */
-  transition:opacity 1s ease 2.1s, visibility 1s 2.1s;
+  /* the page only reveals after the card has fully risen (~2.45s in, done ~3.35s) */
+  transition:opacity .9s ease 2.45s, visibility .9s 2.45s;
   /* real SVG kraft: fractal-noise embossed by a diffuse light → paper fibres */
   --paper:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='240' height='240'%3E%3Cfilter id='p'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.042' numOctaves='4' seed='6' stitchTiles='stitch' result='n'/%3E%3CfeDiffuseLighting in='n' lighting-color='%23ffffff' surfaceScale='1.7' result='l'%3E%3CfeDistantLight azimuth='235' elevation='58'/%3E%3C/feDiffuseLighting%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23p)'/%3E%3C/svg%3E");
   --grain:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23g)'/%3E%3C/svg%3E");
@@ -130,50 +130,52 @@ body::before{
 .envelope__front,
 .envelope__flap{ position:absolute; inset:0; backface-visibility:hidden; }
 
-/* shared kraft paper: emboss (soft-light) + fine grain (overlay) over a warm gradient */
+/* shared kraft paper: emboss (soft-light) + fine grain (overlay) over a warm 4-stop ramp */
 .envelope__back,
 .envelope__front,
 .envelope__flap{
   background:
     var(--grain) 0 0/160px 160px,
     var(--paper) 0 0/300px 300px,
-    linear-gradient(162deg,#E9CEAB 0%,#DABA8D 46%,#C7A26F 100%);
+    linear-gradient(160deg,#EFD9B7 0%,#E2C28E 40%,#CBA670 74%,#BB905B 100%);
   background-blend-mode:overlay, soft-light, normal;
 }
 
-/* envelope back / inside (darker, gives depth where the flap opens) */
+/* envelope back / inside (darker — the depth you see beside & behind the flap) */
 .envelope__back{
   z-index:1;
   background:
     var(--paper) 0 0/300px 300px,
-    linear-gradient(180deg,#C9A879 0%,#B7935F 100%);
+    linear-gradient(180deg,#C2A070 0%,#AD8A57 58%,#9C7748 100%);
   background-blend-mode:soft-light, normal;
-  box-shadow:inset 0 0 120px rgba(70,46,18,.4);
+  box-shadow:inset 0 0 140px rgba(64,40,14,.5);
 }
-/* front pocket — hides the card; dips to a soft V at the top */
+/* front pocket — hides the card; seams climb to a crisp V just under the flap tip */
 .envelope__front{
   z-index:3;
-  clip-path:polygon(0 30%, 50% 44%, 100% 30%, 100% 100%, 0 100%);
-  filter:drop-shadow(0 -1px 0 rgba(120,86,30,.45));
+  clip-path:polygon(0 24%, 50% 38%, 100% 24%, 100% 100%, 0 100%);
+  filter:drop-shadow(0 -1px 0 rgba(120,86,30,.5));
 }
-/* the two diagonal seams of the front pocket */
+/* depth inside the pocket: a soft shadow under the flap line + the two diagonal seams */
 .envelope__front::before{
   content:""; position:absolute; inset:0; clip-path:inherit; pointer-events:none;
   background:
-    linear-gradient(118deg,transparent calc(50% - 1px),rgba(120,86,30,.16) 50%,transparent calc(50% + 1px)) left/50% 100% no-repeat,
-    linear-gradient(242deg,transparent calc(50% - 1px),rgba(120,86,30,.16) 50%,transparent calc(50% + 1px)) right/50% 100% no-repeat;
+    radial-gradient(135% 58% at 50% 0%,rgba(74,48,16,.30),transparent 58%),
+    linear-gradient(116deg,transparent calc(50% - 1px),rgba(110,76,26,.20) 50%,transparent calc(50% + 1px)) left/50% 100% no-repeat,
+    linear-gradient(244deg,transparent calc(50% - 1px),rgba(110,76,26,.20) 50%,transparent calc(50% + 1px)) right/50% 100% no-repeat;
 }
-/* top flap — swings open on a 3D hinge */
+/* top flap — a wide, shallow triangle with a softly blunted tip; swings on a 3D hinge */
 .envelope__flap{
   z-index:5; transform-origin:50% 0;
-  clip-path:polygon(0 0, 100% 0, 50% 50%);
-  filter:drop-shadow(0 7px 9px rgba(40,26,10,.34));
-  transition:transform 1.15s cubic-bezier(.6,.04,.2,1) .3s;
+  clip-path:polygon(0 0, 100% 0, 50.7% 35%, 50% 36.5%, 49.3% 35%);
+  filter:drop-shadow(0 9px 11px rgba(40,26,10,.30));
 }
-/* a soft shadow + warm tint pooling toward the flap's sealed tip */
+/* warm shadow pooling toward the flap's tip + a faint crease down its spine */
 .envelope__flap::after{
   content:""; position:absolute; inset:0; clip-path:inherit; pointer-events:none;
-  background:radial-gradient(120% 80% at 50% 100%,rgba(90,60,22,.22),transparent 62%);
+  background:
+    linear-gradient(90deg,transparent calc(50% - .8px),rgba(120,84,40,.16) 50%,transparent calc(50% + .8px)),
+    radial-gradient(120% 86% at 50% 100%,rgba(86,56,20,.26),transparent 60%);
 }
 
 /* the invitation card — tucked entirely behind the front when closed */
@@ -187,7 +189,6 @@ body::before{
   box-shadow:0 26px 54px -22px rgba(40,26,10,.55), inset 0 0 0 1px rgba(160,124,43,.22);
   display:flex; align-items:center; justify-content:center; padding:4% 7%;
   transform:translateY(0);
-  transition:transform 1.35s cubic-bezier(.2,.8,.2,1) .85s;
 }
 .letter__inner{ display:flex; flex-direction:column; align-items:center; gap:.25rem; }
 .letter__script{ margin:0; font-family:var(--script); color:var(--gold-deep);
@@ -203,12 +204,22 @@ body::before{
 .letter__place{ margin:.25rem 0 0; font-family:var(--sans); text-transform:uppercase;
   letter-spacing:.16em; font-size:clamp(.5rem,1.8vw,.68rem); color:var(--ink-soft); opacity:.7; }
 
-/* the GOLD wax seal = the monogram */
+/* the GOLD wax seal = the monogram — seated on the flap tip, holding it shut */
 .envelope__wax{
-  position:absolute; z-index:7; left:50%; top:45%;
+  position:absolute; z-index:7; left:50%; top:38%;
   width:clamp(92px,20vmin,168px); aspect-ratio:1;
   transform:translate(-50%,-50%); border:0; padding:0; background:none; cursor:pointer;
   transition:transform .85s cubic-bezier(.5,.1,.2,1), opacity .7s ease;
+  /* no tap-flash box, no long-press callout, no double-tap zoom/300ms delay */
+  touch-action:manipulation;
+}
+/* the seal region: nothing selectable, no mobile tap-highlight box.
+   (only the wax shows a pointer — the rest of the overlay stays a plain cursor) */
+.seal,
+.envelope__wax{
+  -webkit-tap-highlight-color:transparent;
+  -webkit-touch-callout:none;
+  -webkit-user-select:none; user-select:none;
 }
 .wax__disc{
   position:absolute; inset:0; border-radius:50%; display:grid; place-items:center;
@@ -264,27 +275,44 @@ body::before{
   opacity:0; animation:fadeUp 1s ease forwards 2.9s;
 }
 
-/* ---------- the open sequence ---------- */
+/* ---------- the open sequence: wax breaks → flap swings → card rises → page reveals ---------- */
 .seal.is-open{ opacity:0; visibility:hidden; }
-.seal.is-open .envelope{ transform:translateY(-1.5%) scale(1.03); }
-.seal.is-open .envelope__wax{ transform:translate(-50%,-210%) rotate(-12deg) scale(.55); opacity:0; }
-.seal.is-open .envelope__flap{ transform:rotateX(176deg); z-index:0; }
-.seal.is-open .envelope__letter{ transform:translateY(-90%); z-index:9; }
+.seal.is-open .envelope{ transform:translateY(-3%) scale(1.05); transition:transform 1.6s cubic-bezier(.2,.8,.2,1); }
+.seal.is-open .envelope__wax{ animation:waxBreak 1s cubic-bezier(.5,.1,.2,1) forwards; }
+.seal.is-open .envelope__flap{ animation:flapOpen 1.25s cubic-bezier(.5,.05,.2,1) .28s forwards; z-index:0; }
+.seal.is-open .envelope__letter{ transform:translateY(-88%) scale(1.04); z-index:9;
+  transition:transform 1.4s cubic-bezier(.22,.78,.24,1) .9s; }
 .seal.is-open .seal__hint,
 .seal.is-open .seal__tag{ opacity:0; animation:none; transition:opacity .3s ease; }
 
-/* DESKTOP — a big sealed envelope resting on the dark surface */
+/* DESKTOP — a big sealed envelope resting on the dark surface, with a soft cast shadow */
 @media (min-width:768px){
   .envelope{
     position:relative; inset:auto;
     width:min(86vw,900px); height:min(84vh,600px);
-    box-shadow:0 60px 130px -45px rgba(0,0,0,.8), 0 0 0 1px rgba(255,255,255,.04);
+    box-shadow:
+      0 30px 50px -28px rgba(20,10,2,.7),
+      0 70px 140px -50px rgba(0,0,0,.78),
+      0 0 0 1px rgba(255,255,255,.05);
   }
 }
 
 @keyframes waxbreathe{0%,100%{transform:scale(1)}50%{transform:scale(1.03)}}
 @keyframes fadeUp{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
 @keyframes fade{0%,100%{opacity:.5}50%{opacity:1}}
+/* the wax cracks off its seat — a quick recoil, then it lifts away and fades */
+@keyframes waxBreak{
+  0%   { transform:translate(-50%,-50%) scale(1);            opacity:1; }
+  16%  { transform:translate(-50%,-54%) scale(1.07) rotate(-2deg); opacity:1; }
+  34%  { transform:translate(-50%,-46%) scale(.96) rotate(3deg);   opacity:1; }
+  100% { transform:translate(-50%,-260%) scale(.5) rotate(-14deg); opacity:0; }
+}
+/* the flap swings back on its hinge with a gentle overshoot, then settles open */
+@keyframes flapOpen{
+  0%   { transform:rotateX(0deg); }
+  72%  { transform:rotateX(185deg); }
+  100% { transform:rotateX(178deg); }
+}
 
 /* ════════ NAV ════════ */
 .nav{

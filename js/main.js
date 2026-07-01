@@ -15,8 +15,8 @@
     seal.classList.add("is-open");
     document.body.classList.remove("locked");
     try { sessionStorage.setItem("fg-seal", "1"); } catch (e) {}
-    // envelope choreography: wax breaks → flap opens → card rises → page reveals (~3.1s)
-    window.setTimeout(function () { if (seal) seal.style.display = "none"; }, 3200);
+    // envelope choreography: wax breaks → flap opens → card rises → page reveals (~3.35s)
+    window.setTimeout(function () { if (seal) seal.style.display = "none"; }, 3500);
   }
 
   if (seal) {
